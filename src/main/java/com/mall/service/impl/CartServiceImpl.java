@@ -7,9 +7,11 @@ import com.mall.exception.ErrorCode;
 import com.mall.mapper.CartMapper;
 import com.mall.mapper.ProductMapper;
 import com.mall.service.CartService;
+import com.mall.vo.CartVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,8 +26,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> list(Long userId) {
-        return cartMapper.selectByUserId(userId);
+    public List<CartVO> list(Long userId) {
+        return toCartVOList(cartMapper.selectByUserId(userId));
     }
 
     @Override
@@ -67,7 +69,31 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> getChecked(Long userId) {
-        return cartMapper.selectCheckedByUserId(userId);
+    public List<CartVO> getChecked(Long userId) {
+        return toCartVOList(cartMapper.selectCheckedByUserId(userId));
+    }
+
+    private List<CartVO> toCartVOList(List<Cart> carts) {
+        List<CartVO> vos = new ArrayList<>();
+        for (Cart cart : carts) {
+            Product product = productMapper.selectById(cart.getProductId());
+            CartVO vo = new CartVO();
+            vo.setId(cart.getId());
+            vo.setUserId(cart.getUserId());
+            vo.setProductId(cart.getProductId());
+            vo.setQuantity(cart.getQuantity());
+            vo.setChecked(cart.getChecked());
+            vo.setCreateTime(cart.getCreateTime());
+            vo.setUpdateTime(cart.getUpdateTime());
+            if (product != null) {
+                vo.setProductName(product.getName());
+                vo.setProductImage(product.getMainImage());
+                vo.setProductPrice(product.getPrice());
+                vo.setProductStock(product.getStock());
+                vo.setProductOnShelf(product.getStatus() == 1);
+            }
+            vos.add(vo);
+        }
+        return vos;
     }
 }

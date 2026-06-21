@@ -11,6 +11,7 @@ public interface OrderMapper {
     Order selectByOrderNo(@Param("orderNo") String orderNo);
     List<Order> selectPage(@Param("orderNo") String orderNo, @Param("status") Integer status,
                            @Param("startTime") String startTime, @Param("endTime") String endTime);
+    List<Order> selectByUserId(@Param("userId") Long userId, @Param("status") Integer status);
     int insert(Order order);
     int updatePrice(@Param("id") Long id, @Param("totalAmount") java.math.BigDecimal totalAmount);
     int updatePayStatus(@Param("id") Long id, @Param("payStatus") Integer payStatus);

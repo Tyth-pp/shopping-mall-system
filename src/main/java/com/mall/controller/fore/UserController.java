@@ -49,11 +49,10 @@ public class UserController {
     @Operation(summary = "找回密码")
     @PostMapping("/resetPassword")
     public Result<Void> resetPassword(@RequestBody Map<String, String> params) {
-        // Simplified: update password by username + new password
         User user = userService.getByUsername(params.get("username"));
         if (user == null) return Result.fail("用户不存在");
-        user.setPassword(params.get("newPassword"));
-        userService.register(user); // re-hash password
+        user.setPassword(com.mall.util.Md5Util.encrypt(params.get("newPassword")));
+        userService.updateProfile(user);
         return Result.success();
     }
 

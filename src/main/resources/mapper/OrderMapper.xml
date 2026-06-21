@@ -45,6 +45,15 @@
         ORDER BY create_time DESC
     </select>
 
+    <select id="selectByUserId" resultMap="OrderResultMap">
+        SELECT * FROM `order`
+        WHERE user_id = #{userId}
+        <if test="status != null">
+            AND pay_status = #{status}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
     <insert id="insert" parameterType="com.mall.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `order` (order_no, user_id, total_amount, pay_status, ship_status, address_id, remark, create_time, update_time)
         VALUES (#{orderNo}, #{userId}, #{totalAmount}, #{payStatus}, #{shipStatus}, #{addressId}, #{remark}, NOW(), NOW())

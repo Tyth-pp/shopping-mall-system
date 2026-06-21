@@ -163,12 +163,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageVO<Order> userPage(Long userId, int page, int pageSize, Integer status) {
         PageHelper.startPage(page, pageSize);
-        // Use existing selectPage with user filter — or we add a userId param
-        List<Order> all = orderMapper.selectPage(null, status, null, null);
-        List<Order> filtered = all.stream()
-                .filter(o -> o.getUserId().equals(userId))
-                .toList();
-        return PageVO.of(filtered, filtered.size(), page, pageSize);
+        List<Order> list = orderMapper.selectByUserId(userId, status);
+        PageInfo<Order> info = new PageInfo<>(list);
+        return PageVO.of(list, info.getTotal(), page, pageSize);
     }
 
     @Override

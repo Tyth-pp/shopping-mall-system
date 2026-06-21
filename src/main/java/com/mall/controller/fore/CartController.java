@@ -1,7 +1,7 @@
 package com.mall.controller.fore;
 
-import com.mall.entity.Cart;
 import com.mall.service.CartService;
+import com.mall.vo.CartVO;
 import com.mall.util.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class CartController {
 
     @Operation(summary = "购物车列表")
     @GetMapping("/list")
-    public Result<List<Cart>> list(HttpServletRequest request) {
+    public Result<List<CartVO>> list(HttpServletRequest request) {
         return Result.success(cartService.list(getUserId(request)));
     }
 
@@ -69,7 +69,7 @@ public class CartController {
 
     @Operation(summary = "获取勾选项（结算用）")
     @GetMapping("/checked")
-    public Result<List<Cart>> checked(HttpServletRequest request) {
+    public Result<List<CartVO>> checked(HttpServletRequest request) {
         return Result.success(cartService.getChecked(getUserId(request)));
     }
 }

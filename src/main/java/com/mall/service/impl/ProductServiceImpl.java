@@ -22,12 +22,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final ProductCategoryMapper categoryMapper;
     private final ProductCollectMapper collectMapper;
+    private final IndexServiceImpl indexService;
 
     public ProductServiceImpl(ProductMapper productMapper, ProductCategoryMapper categoryMapper,
-                              ProductCollectMapper collectMapper) {
+                              ProductCollectMapper collectMapper, IndexServiceImpl indexService) {
         this.productMapper = productMapper;
         this.categoryMapper = categoryMapper;
         this.collectMapper = collectMapper;
+        this.indexService = indexService;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
     public void add(Product product) {
         product.setStatus(1);
         productMapper.insert(product);
+        indexService.evictCache();
     }
 
     @Override
@@ -58,6 +61,7 @@ public class ProductServiceImpl implements ProductService {
         if (productMapper.selectById(product.getId()) == null)
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXIST);
         productMapper.update(product);
+        indexService.evictCache();
     }
 
     @Override
@@ -66,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
         if (productMapper.selectById(id) == null)
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXIST);
         productMapper.updateStatus(id, status);
+        indexService.evictCache();
     }
 
     @Override
@@ -82,12 +87,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void addCategory(ProductCategory category) {
         categoryMapper.insert(category);
+        indexService.evictCache();
     }
 
     @Override
     @Transactional
     public void updateCategory(ProductCategory category) {
         categoryMapper.update(category);
+        indexService.evictCache();
     }
 
     // 收藏

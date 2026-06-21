@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AdminMapper {
+    java.util.List<Admin> selectAll();
     Admin selectById(@Param("id") Long id);
     Admin selectByUsername(@Param("username") String username);
     int insert(Admin admin);

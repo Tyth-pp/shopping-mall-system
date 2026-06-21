@@ -74,8 +74,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public PageVO<Admin> list(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        // AdminMapper.selectAll to be added
-        return PageVO.of(null, 0, page, pageSize);
+        List<Admin> list = adminMapper.selectAll();
+        PageInfo<Admin> info = new PageInfo<>(list);
+        return PageVO.of(list, info.getTotal(), page, pageSize);
     }
 
     @Override
