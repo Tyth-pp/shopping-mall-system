@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.StatisticsMapper">
+
+    <select id="dashboard" resultType="java.util.HashMap">
+        SELECT
+            (SELECT COUNT(*) FROM `order` WHERE DATE(create_time) = CURDATE()) AS todayOrders,
+            (SELECT IFNULL(SUM(total_amount), 0) FROM `order` WHERE DATE(create_time) = CURDATE() AND pay_status = 1) AS todayRevenue,
+            (SELECT COUNT(*) FROM `user` WHERE DATE(create_time) = CURDATE()) AS newUsers,
+            (SELECT COUNT(*) FROM product WHERE status = 1) AS totalProducts
+    </select>
+
+    <select id="salesByDay" resultType="java.util.HashMap">
+        SELECT DATE(create_time) AS date, COUNT(*) AS count, IFNULL(SUM(total_amount), 0) AS amount
+        FROM `order`
+        WHERE pay_status = 1 AND create_time BETWEEN #{startDate} AND #{endDate}
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
+
+    <select id="salesByMonth" resultType="java.util.HashMap">
+        SELECT MONTH(create_time) AS month, COUNT(*) AS count, IFNULL(SUM(total_amount), 0) AS amount
+        FROM `order`
+        WHERE pay_status = 1 AND YEAR(create_time) = #{year}
+        GROUP BY MONTH(create_time)
+        ORDER BY month
+    </select>
+
+    <select id="userRegByDay" resultType="java.util.HashMap">
+        SELECT DATE(create_time) AS date, COUNT(*) AS count
+        FROM `user`
+        WHERE create_time BETWEEN #{startDate} AND #{endDate}
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
+
+    <select id="revenueByMonth" resultType="java.util.HashMap">
+        SELECT MONTH(create_time) AS month, IFNULL(SUM(total_amount), 0) AS amount
+        FROM `order`
+        WHERE pay_status = 1 AND YEAR(create_time) = #{year}
+        GROUP BY MONTH(create_time)
+        ORDER BY month
+    </select>
+
+    <select id="countTodayOrders" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM `order` WHERE DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="todayRevenue" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(total_amount), 0) FROM `order` WHERE DATE(create_time) = CURDATE() AND pay_status = 1
+    </select>
+
+    <select id="countNewUsersToday" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM `user` WHERE DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="countTotalProducts" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM product WHERE status = 1
+    </select>
+
+</mapper>

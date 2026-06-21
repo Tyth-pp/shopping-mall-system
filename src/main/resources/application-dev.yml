@@ -1,0 +1,14 @@
+# 开发环境配置
+server:
+  port: 8080
+
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: 2736
+
+logging:
+  level:
+    com.mall: debug
