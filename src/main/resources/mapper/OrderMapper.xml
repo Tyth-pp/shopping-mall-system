@@ -54,6 +54,13 @@
         ORDER BY create_time DESC
     </select>
 
+    <select id="selectUnpaidBefore" resultMap="OrderResultMap">
+        SELECT * FROM `order`
+        WHERE pay_status = 0
+          AND create_time &lt;= #{expireTime}
+        ORDER BY create_time ASC
+    </select>
+
     <insert id="insert" parameterType="com.mall.entity.Order" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `order` (order_no, user_id, total_amount, pay_status, ship_status, address_id, remark, create_time, update_time)
         VALUES (#{orderNo}, #{userId}, #{totalAmount}, #{payStatus}, #{shipStatus}, #{addressId}, #{remark}, NOW(), NOW())
@@ -67,6 +74,18 @@
         UPDATE `order` SET pay_status = #{payStatus},
         <if test="payStatus == 1">pay_time = NOW(),</if>
         update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <update id="payUnpaid">
+        UPDATE `order`
+        SET pay_status = 1, pay_time = NOW(), update_time = NOW()
+        WHERE id = #{id} AND pay_status = 0
+    </update>
+
+    <update id="cancelUnpaid">
+        UPDATE `order`
+        SET pay_status = 3, update_time = NOW()
+        WHERE id = #{id} AND pay_status = 0
     </update>
 
     <update id="updateShipStatus">

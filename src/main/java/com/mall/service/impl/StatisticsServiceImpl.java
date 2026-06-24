@@ -49,8 +49,39 @@ public class StatisticsServiceImpl implements StatisticsService {
     public Map<String, Object> revenue(String type) {
         LocalDate now = LocalDate.now();
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("list", statisticsMapper.revenueByMonth(
-                String.valueOf(now.getYear())));
+        if ("day".equals(type)) {
+            // 按天：近30天
+            result.put("list", statisticsMapper.salesByDay(
+                    now.minusDays(30).toString(), now.plusDays(1).toString()));
+        } else if ("week".equals(type)) {
+            // 按天：近7天
+            result.put("list", statisticsMapper.salesByDay(
+                    now.minusDays(7).toString(), now.plusDays(1).toString()));
+        } else {
+            // 按月
+            result.put("list", statisticsMapper.revenueByMonth(
+                    String.valueOf(now.getYear())));
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> workbench() {
+        return statisticsMapper.workbench();
+    }
+
+    @Override
+    public Map<String, Object> orderStats() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("totalOrders", statisticsMapper.countTotalOrders());
+        result.put("validOrders", statisticsMapper.countValidOrders());
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> productTop10() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("list", statisticsMapper.productSalesTop10());
         return result;
     }
 }

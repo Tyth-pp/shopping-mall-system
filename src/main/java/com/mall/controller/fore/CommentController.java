@@ -33,10 +33,11 @@ public class CommentController {
 
     @Operation(summary = "追加评价")
     @PostMapping("/append")
-    public Result<Void> append(@RequestBody Map<String, Object> params) {
+    public Result<Void> append(HttpServletRequest request, @RequestBody Map<String, Object> params) {
+        Long userId = (Long) request.getAttribute("userId");
         Long commentId = Long.valueOf(params.get("commentId").toString());
         String appendContent = (String) params.get("appendContent");
-        commentService.append(commentId, appendContent);
+        commentService.append(userId, commentId, appendContent);
         return Result.success();
     }
 

@@ -8,13 +8,11 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-/**
- * JWT 过滤器 —— 实现标准 jakarta.servlet.Filter，不依赖 Shiro 类层次
- * 在请求到达 ShiroFilter 之前完成 JWT 校验和 Subject 登录
- */
+@Slf4j
 public class JwtFilter implements Filter {
 
     private static final String TOKEN_HEADER = "Authorization";
@@ -33,18 +31,32 @@ public class JwtFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String token = extractToken(request);
-        if (token != null && jwtUtil.validateToken(token)) {
-            // 将用户信息存入 request 属性
-            request.setAttribute("userId", jwtUtil.getUserId(token));
-            request.setAttribute("username", jwtUtil.getUsername(token));
+        if (token == null) {
+            log.debug("JwtFilter: 无 Authorization 头, path={}", request.getRequestURI());
+            chain.doFilter(request, response);
+            return;
+        }
 
-            // Shiro 登录
-            try {
-                org.apache.shiro.SecurityUtils.getSubject().login(new JwtToken(token));
-            } catch (Exception e) {
-                writeUnauthorized(response);
-                return;
-            }
+        if (!jwtUtil.validateToken(token)) {
+            log.warn("JwtFilter: Token 校验失败, path={}", request.getRequestURI());
+            writeUnauthorized(response);
+            return;
+        }
+
+        // Token 有效，设置用户信息
+        Long userId = jwtUtil.getUserId(token);
+        String username = jwtUtil.getUsername(token);
+        request.setAttribute("userId", userId);
+        request.setAttribute("username", username);
+        log.debug("JwtFilter: Token 有效, userId={}, username={}, path={}", userId, username, request.getRequestURI());
+
+        // Shiro 登录
+        try {
+            org.apache.shiro.SecurityUtils.getSubject().login(new JwtToken(token));
+        } catch (Exception e) {
+            log.error("JwtFilter: Shiro login 异常, path={}, error={}", request.getRequestURI(), e.getMessage());
+            writeUnauthorized(response);
+            return;
         }
 
         chain.doFilter(request, response);

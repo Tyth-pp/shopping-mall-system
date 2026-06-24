@@ -3,7 +3,25 @@
 <mapper namespace="com.mall.mapper.ProductCommentMapper">
 
     <select id="selectByProductId" resultType="com.mall.entity.ProductComment">
-        SELECT * FROM product_comment WHERE product_id = #{productId} ORDER BY create_time DESC
+        SELECT pc.*, u.username
+        FROM product_comment pc
+        LEFT JOIN `user` u ON pc.user_id = u.id
+        WHERE pc.product_id = #{productId}
+        ORDER BY pc.create_time DESC
+    </select>
+
+    <select id="selectByOrderId" resultType="com.mall.entity.ProductComment">
+        SELECT * FROM product_comment WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectById" resultType="com.mall.entity.ProductComment">
+        SELECT * FROM product_comment WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderAndProduct" resultType="com.mall.entity.ProductComment">
+        SELECT * FROM product_comment
+        WHERE order_id = #{orderId} AND product_id = #{productId}
+        LIMIT 1
     </select>
 
     <insert id="insert" parameterType="com.mall.entity.ProductComment" useGeneratedKeys="true" keyProperty="id">

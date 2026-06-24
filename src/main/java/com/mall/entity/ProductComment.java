@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class ProductComment implements Serializable {
     private Long id;
     private Long userId;
+    private String username;
     private Long productId;
     private Long orderId;
     private Integer rating;

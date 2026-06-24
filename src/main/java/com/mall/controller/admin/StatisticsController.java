@@ -45,4 +45,22 @@ public class StatisticsController {
     public Result<Map<String, Object>> revenue(@RequestParam(defaultValue = "month") String type) {
         return Result.success(statisticsService.revenue(type));
     }
+
+    @Operation(summary = "工作台数据")
+    @GetMapping("/workbench")
+    public Result<Map<String, Object>> workbench() {
+        return Result.success(statisticsService.workbench());
+    }
+
+    @Operation(summary = "订单统计")
+    @GetMapping("/orderStats")
+    public Result<Map<String, Object>> orderStats() {
+        return Result.success(statisticsService.orderStats());
+    }
+
+    @Operation(summary = "商品销量TOP10")
+    @GetMapping("/productTop10")
+    public Result<Map<String, Object>> productTop10() {
+        return Result.success(statisticsService.productTop10());
+    }
 }

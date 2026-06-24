@@ -3,6 +3,8 @@ package com.mall.controller.fore;
 import com.mall.annotation.RepeatSubmit;
 import com.mall.entity.Order;
 import com.mall.entity.OrderItem;
+import com.mall.entity.ProductComment;
+import com.mall.mapper.ProductCommentMapper;
 import com.mall.service.OrderService;
 import com.mall.util.Result;
 import com.mall.vo.PageVO;
@@ -20,9 +22,11 @@ import java.util.Map;
 public class OrderController {
 
     private final OrderService orderService;
+    private final ProductCommentMapper commentMapper;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ProductCommentMapper commentMapper) {
         this.orderService = orderService;
+        this.commentMapper = commentMapper;
     }
 
     private Long getUserId(HttpServletRequest request) {
@@ -36,6 +40,17 @@ public class OrderController {
         Long addressId = Long.valueOf(params.get("addressId").toString());
         String remark = (String) params.getOrDefault("remark", null);
         return Result.success(orderService.create(getUserId(request), addressId, remark));
+    }
+
+    @Operation(summary = "立即购买生成订单")
+    @PostMapping("/buy-now")
+    @RepeatSubmit(expire = 5000)
+    public Result<Map<String, Object>> buyNow(HttpServletRequest request, @RequestBody Map<String, Object> params) {
+        Long addressId = Long.valueOf(params.get("addressId").toString());
+        Long productId = Long.valueOf(params.get("productId").toString());
+        Integer quantity = Integer.valueOf(params.getOrDefault("quantity", 1).toString());
+        String remark = (String) params.getOrDefault("remark", null);
+        return Result.success(orderService.createBuyNow(getUserId(request), addressId, productId, quantity, remark));
     }
 
     @Operation(summary = "支付订单")
@@ -73,7 +88,8 @@ public class OrderController {
     public Result<Map<String, Object>> detail(@PathVariable Long orderId) {
         Order order = orderService.getById(orderId);
         List<OrderItem> items = orderService.getItems(orderId);
-        return Result.success(Map.of("order", order, "items", items));
+        List<ProductComment> comments = commentMapper.selectByOrderId(orderId);
+        return Result.success(Map.of("order", order, "items", items, "comments", comments));
     }
 
     @Operation(summary = "申请退货退款")

@@ -33,9 +33,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageVO<Product> page(int page, int pageSize, String keyword, Long categoryId, Integer status) {
+    public PageVO<Product> page(int page, int pageSize, String keyword, Long categoryId, Integer status, String sort) {
         PageHelper.startPage(page, pageSize);
-        List<Product> list = productMapper.selectPage(keyword, categoryId, status, null);
+        List<Product> list = productMapper.selectPage(keyword, categoryId, status, sort);
         PageInfo<Product> info = new PageInfo<>(list);
         return PageVO.of(list, info.getTotal(), page, pageSize);
     }

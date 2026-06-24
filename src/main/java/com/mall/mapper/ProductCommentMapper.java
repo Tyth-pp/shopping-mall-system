@@ -8,6 +8,9 @@ import java.util.List;
 @Mapper
 public interface ProductCommentMapper {
     List<ProductComment> selectByProductId(@Param("productId") Long productId);
+    List<ProductComment> selectByOrderId(@Param("orderId") Long orderId);
+    ProductComment selectById(@Param("id") Long id);
+    ProductComment selectByOrderAndProduct(@Param("orderId") Long orderId, @Param("productId") Long productId);
     int insert(ProductComment comment);
     int updateAppend(@Param("id") Long id, @Param("appendContent") String appendContent);
 }

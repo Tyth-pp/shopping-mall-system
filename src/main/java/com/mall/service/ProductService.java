@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    PageVO<Product> page(int page, int pageSize, String keyword, Long categoryId, Integer status);
+    PageVO<Product> page(int page, int pageSize, String keyword, Long categoryId, Integer status, String sort);
     Product getById(Long id);
     void add(Product product);
     void update(Product product);

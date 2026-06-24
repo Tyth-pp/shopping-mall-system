@@ -30,7 +30,7 @@ public class ProductController {
                                          @RequestParam(required = false) Long categoryId,
                                          @RequestParam(required = false) String keyword,
                                          @RequestParam(required = false) String sort) {
-        return Result.success(productService.page(page, pageSize, keyword, categoryId, 1));
+        return Result.success(productService.page(page, pageSize, keyword, categoryId, 1, sort));
     }
 
     @Operation(summary = "商品详情")

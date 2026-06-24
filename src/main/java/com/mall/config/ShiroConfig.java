@@ -3,6 +3,7 @@ package com.mall.config;
 import com.mall.shiro.JwtFilter;
 import com.mall.shiro.MallRealm;
 import com.mall.util.JwtUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.realm.Realm;
@@ -61,6 +62,9 @@ public class ShiroConfig {
         evaluator.setSessionStorageEnabled(false);
         subjectDAO.setSessionStorageEvaluator(evaluator);
         manager.setSubjectDAO(subjectDAO);
+
+        // 绑定 SecurityManager 到全局（替代 ShiroWebAutoConfiguration 的初始化）
+        SecurityUtils.setSecurityManager(manager);
 
         return manager;
     }

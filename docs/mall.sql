@@ -205,7 +205,7 @@ CREATE TABLE `order` (
     `order_no`      VARCHAR(32)    NOT NULL                 COMMENT '订单号',
     `user_id`       BIGINT         NOT NULL                 COMMENT '用户ID',
     `total_amount`  DECIMAL(10,2)  NOT NULL                 COMMENT '订单总金额',
-    `pay_status`    TINYINT        NOT NULL DEFAULT 0       COMMENT '支付状态：0=未支付 1=已支付 2=已退款',
+    `pay_status`    TINYINT        NOT NULL DEFAULT 0       COMMENT '支付状态：0=未支付 1=已支付 2=已退款 3=已取消',
     `ship_status`   TINYINT        NOT NULL DEFAULT 0       COMMENT '物流状态：0=未发货 1=已发货 2=已收货',
     `address_id`    BIGINT         NOT NULL                 COMMENT '收货地址ID',
     `tracking_no`   VARCHAR(50)    DEFAULT NULL             COMMENT '物流单号',

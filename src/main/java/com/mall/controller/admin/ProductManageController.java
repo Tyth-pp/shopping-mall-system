@@ -32,7 +32,7 @@ public class ProductManageController {
                                          @RequestParam(required = false) String keyword,
                                          @RequestParam(required = false) Long categoryId,
                                          @RequestParam(required = false) Integer status) {
-        return Result.success(productService.page(page, pageSize, keyword, categoryId, status));
+        return Result.success(productService.page(page, pageSize, keyword, categoryId, status, null));
     }
 
     @Operation(summary = "新增商品")
