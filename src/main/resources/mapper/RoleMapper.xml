@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.RoleMapper">
+
+    <select id="selectAll" resultType="com.mall.entity.Role">
+        SELECT * FROM role ORDER BY id
+    </select>
+
+    <select id="selectById" resultType="com.mall.entity.Role">
+        SELECT * FROM role WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.mall.entity.Role" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO role (name, code, description, create_time, update_time)
+        VALUES (#{name}, #{code}, #{description}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.mall.entity.Role">
+        UPDATE role
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="description != null">description = #{description},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM role WHERE id = #{id}
+    </delete>
+
+    <select id="selectByAdminId" resultType="com.mall.entity.Role">
+        SELECT r.* FROM role r INNER JOIN admin_role ar ON r.id = ar.role_id
+        WHERE ar.admin_id = #{adminId}
+    </select>
+
+</mapper>
